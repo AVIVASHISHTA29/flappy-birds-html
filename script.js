@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Add event listener for jump
         window.addEventListener("keydown", jump);
+        window.addEventListener("click", mouseJump);
 
         // Clear any remaining obstacles from previous game
         clearObstacles();
@@ -48,6 +49,15 @@ document.addEventListener("DOMContentLoaded", function () {
             birdVelocity = -10;
             wingSound.play();
         }
+    }
+
+    function mouseJump(e) {
+        console.log(e);
+        if (!gameOver) {
+            birdVelocity = -10;
+            wingSound.play();
+        }
+
     }
 
     // Function to update the game area
@@ -66,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Create obstacle element
         var obstacle = document.createElement("div");
         obstacle.className = "obstacle";
-        var obstacleHeight = Math.random() * (gameArea.clientHeight - 200) + 50;
+        var obstacleHeight = Math.random() * (gameArea.clientHeight - 300) + 50;
         obstacle.style.height = obstacleHeight + "px";
         obstacle.style.top = (Math.random() * (gameArea.clientHeight - obstacleHeight)) + "px";
         gameArea.appendChild(obstacle);
@@ -106,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function checkGameOver() {
         // Check if the bird hits the top or bottom of the game area
         if (birdY < 0 || birdY + bird.clientHeight > gameArea.clientHeight) {
-            endGame("hit");
+            endGame();
         }
 
         // Check for collisions with obstacles
@@ -117,24 +127,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 bird.getBoundingClientRect().left < obstacle.getBoundingClientRect().right &&
                 bird.getBoundingClientRect().bottom > obstacle.getBoundingClientRect().top &&
                 bird.getBoundingClientRect().top < obstacle.getBoundingClientRect().bottom) {
-                endGame("hit");
+                endGame();
             }
         }
     }
 
     // Function to handle game over
-    function endGame(cause) {
+    function endGame() {
         gameOver = true;
         clearInterval(gameInterval);
         clearInterval(obstacleInterval);
         restartBtn.style.display = "block";
+        hitSound.play();
 
-        // Play the appropriate sound based on the cause of game over
-        if (cause === "die") {
-            dieSound.play();
-        } else if (cause === "hit") {
-            hitSound.play();
-        }
     }
 
     // Event listeners for start and restart buttons
